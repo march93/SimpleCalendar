@@ -12,7 +12,7 @@ const App = () => {
         <div id="logo">
           <span className="icon">date_range</span>
           <span>
-            react<b>calendar</b>
+            simple<b>calendar</b>
           </span>
         </div>
       </header>

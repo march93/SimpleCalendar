@@ -73,7 +73,8 @@ main {
   display: block;
   margin: 0 auto;
   margin-top: 5em;
-  max-width: 50em;
+  max-width: 80em;
+  padding: 0 2em;
 }
 
 
@@ -120,6 +121,7 @@ main {
   display: block;
   position: relative;
   width: 100%;
+  min-width: 900px;
   background: var(--neutral-color);
   border: 1px solid var(--border-color);
 }
@@ -162,7 +164,7 @@ main {
 
 .calendar .body .cell {
   position: relative;
-  height: 5em;
+  height: 10em;
   border-right: 1px solid var(--border-color);
   overflow: hidden;
   cursor: pointer;

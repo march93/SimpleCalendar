@@ -3,7 +3,6 @@ import format from "date-fns/format";
 import addDays from "date-fns/addDays";
 import isSameDay from "date-fns/isSameDay";
 import isSameMonth from "date-fns/isSameMonth";
-import parse from "date-fns/parse";
 
 const Cells = ({
     monthStart,
