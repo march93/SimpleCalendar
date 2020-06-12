@@ -5,8 +5,8 @@ const UserSerializer = require('../serializers/user_serializer');
 
 filter_dates = (events, date) => {
     return events.filter((event) => {
-        let eventStartDate = new Date(event.startTime);
-        let eventEndDate = new Date(event.endTime);
+        let eventStartDate = new Date(event.startDate);
+        let eventEndDate = new Date(event.endDate);
         let queryDate = new Date(date);
 
         return (

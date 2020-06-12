@@ -6,12 +6,20 @@ const Event = sequelize.define('Event', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    startTime: {
+    startDate: {
         type: DataTypes.DATE,
         allowNull: false
     },
-    endTime: {
+    endDate: {
         type: DataTypes.DATE,
+        allowNull: false
+    },
+    startTime: {
+        type: DataTypes.TIME,
+        allowNull: false
+    },
+    endTime: {
+        type: DataTypes.TIME,
         allowNull: false
     }
 });
