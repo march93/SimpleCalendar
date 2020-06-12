@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors')
 const bodyParser = require('body-parser');
 const app = express();
 
 require('./database/setup_db');
 require('./database/setup_tables');
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
