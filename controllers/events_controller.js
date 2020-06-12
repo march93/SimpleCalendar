@@ -11,12 +11,12 @@ exports.get_event = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).send({error: error.name});
+        return res.status(500).send({error: error.name});
     }
 
     if (event.length === 0) {
         // Return 404 Not Found
-        res.status(404).send({error: 'Event not found'});
+        return res.status(404).send({error: 'Event not found'});
     }
 
     // Serialize and then map to a more reader friendly json object
@@ -30,6 +30,11 @@ exports.create_event = async (req, res) => {
     const body = req.body;
     let event;
 
+    if (body.startTime >= body.endTime) {
+        // Start time cannot be after end time
+        return res.status(400).send({error: 'Invalid event times'});
+    }
+
     try {
         event = await Event.create({
             title: body.title,
@@ -38,7 +43,7 @@ exports.create_event = async (req, res) => {
             UserId: req.params.id
         });
     } catch (error) {
-        res.status(400).send({error: error.name});
+        return res.status(400).send({error: error.name});
     }
 
     // Serialize return data
@@ -46,5 +51,46 @@ exports.create_event = async (req, res) => {
 
     // 201 Created
     res.status(201);
+    res.json(serialized.data.attributes);
+}
+
+exports.update_event = async (req, res) => {
+    const body = req.body;
+    let event;
+
+    try {
+        event = await Event.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+    } catch (error) {
+        return res.status(500).send({error: error.name});
+    }
+
+    if (event.length === 0) {
+        // Return 404 Not Found
+        return res.status(404).send({error: 'Event not found'});
+    }
+
+    // Update attributes if they exist
+    if (body.title) event.title = body.title;
+    if (body.startTime) event.startTime = body.startTime;
+
+    // Throw error if end time exists and is before start time
+    if (body.endTime && body.startTime >= body.endTime) {
+        return res.status(400).send({error: 'Invalid event times'});
+    } else {
+        event.endTime = body.endTime;
+    }
+
+    // Save changes to database
+    await event.save();
+
+    // Serialize return data
+    const serialized = EventSerializer.serialize_event(event);
+
+    // 200 OK
+    res.status(200);
     res.json(serialized.data.attributes);
 }
