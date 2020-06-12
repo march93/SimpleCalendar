@@ -1,10 +1,13 @@
 import React from "react";
 import { format } from "date-fns";
+import { Button } from "antd";
 
 const Header = ({
     currentMonth,
     nextMonth,
-    prevMonth
+    prevMonth,
+    toggleModal,
+    showCreate
 }) => {
     const dateFormat = "MMMM yyyy";
 
@@ -19,6 +22,16 @@ const Header = ({
                 <span>
                 {format(currentMonth, dateFormat)}
                 </span>
+            </div>
+            <div>
+                <Button
+                    onClick={() => {
+                        showCreate();
+                        toggleModal();
+                    }}
+                >
+                    Create Event
+                </Button>
             </div>
             <div className="col col-end" onClick={nextMonth}>
                 <div className="icon">chevron_right</div>

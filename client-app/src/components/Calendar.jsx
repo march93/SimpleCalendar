@@ -137,6 +137,8 @@ const Calendar = () => {
                 currentMonth={currentMonth}
                 nextMonth={handleNextMonth}
                 prevMonth={handlePrevMonth}
+                toggleModal={handleToggleModal}
+                showCreate={handleCreateEventState}
             />
             <Days
                 currentMonth={currentMonth}

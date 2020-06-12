@@ -33,11 +33,18 @@ const EventModal = ({
     const momentTimeFormat = "HH:mm:ss"
     const dateFormat = "MMMM d";
     const timeFormat = "h:mma";
+    let modalTitle = dayOfWeek(selectedDate) + ", " + format(selectedDate, dateFormat);
     let body;
 
     const handleOk = () => toggleModal();
 
-    const handleCancel = () => toggleModal();
+    const handleCancel = () => {
+        // Go back to showing events if it's in edit mode
+        if (editEventState) showEvents();
+
+        // Otherwise, close modal
+        else toggleModal();
+    }
 
     const moveToEditMode = (event) => {
         selectDayEvent(event);
@@ -78,15 +85,28 @@ const EventModal = ({
                         className="modalTimeRange"
                         defaultValue={[moment(dayEvent.startTime, momentTimeFormat), moment(dayEvent.endTime, momentTimeFormat)]}
                     />
-              </div>
+              </div>;
     } else if (createEventState) {
-
+        modalTitle = '';
+        body = <div>
+                    <h3>Create Event</h3>
+                    <Input
+                        className="modalTitleInput"
+                        placeholder="Title"
+                    />
+                    <DatePicker.RangePicker
+                        className="modalRangePicker"
+                    />
+                    <TimePicker.RangePicker
+                        className="modalTimeRange"
+                    />
+              </div>;
     }
 
     return (
         <div className="event-modal">
             <Modal
-                title={dayOfWeek(selectedDate) + ", " + format(selectedDate, dateFormat)}
+                title={modalTitle}
                 visible={modalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
