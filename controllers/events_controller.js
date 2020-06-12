@@ -32,8 +32,11 @@ exports.create_event = async (req, res) => {
     let event;
 
     if (
-        body.startDate > body.endDate ||
-        (body.startDate === body.endDate && body.startTime >= body.endTime)
+        new Date(body.startDate).getDate() > new Date(body.endDate).getDate() ||
+        (
+            new Date(body.startDate).getDate() === new Date(body.endDate).getDate() &&
+            body.startTime >= body.endTime
+        )
     ) {
         // Start time and date cannot be after end time and date
         return res.status(400).send({error: 'Invalid event times'});
@@ -82,11 +85,12 @@ exports.update_event = async (req, res) => {
     // Update attributes if they exist
     if (body.title) event.title = body.title;
     if (body.startTime) event.startTime = body.startTime;
+    if (body.startDate) event.startDate = body.startDate;
 
     // Throw error if end date exists and is before start date
     if (
         body.endDate &&
-        body.startDate > body.endDate
+        new Date(body.startDate).getDate() > new Date(body.endDate).getDate()
     ) {
         return res.status(400).send({error: 'Invalid end date'});
     } else {
@@ -96,7 +100,7 @@ exports.update_event = async (req, res) => {
     // Throw error if end time exists and is before start time
     if (
         body.endTime &&
-        body.startDate === body.endDate &&
+        new Date(body.startDate).getDate() === new Date(body.endDate).getDate() &&
         body.startTime >= body.endTime
     ) {
         return res.status(400).send({error: 'Invalid end time'});
