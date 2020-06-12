@@ -5,7 +5,7 @@ exports.get_event = async (req, res) => {
     let event;
 
     try {
-        event = await Event.findAll({
+        event = await Event.findOne({
             where: {
                 id: req.params.id
             }
@@ -21,11 +21,10 @@ exports.get_event = async (req, res) => {
 
     // Serialize and then map to a more reader friendly json object
     const serialized = EventSerializer.serialize_event(event);
-    const parsed = EventSerializer.trim_data(serialized.data);
 
     // 200 OK
     res.status(200);
-    res.json(parsed);
+    res.json(serialized.data.attributes);
 }
 
 exports.create_event = async (req, res) => {
