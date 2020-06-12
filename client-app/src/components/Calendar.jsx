@@ -9,9 +9,12 @@ import endOfWeek from "date-fns/endOfWeek";
 import Header from "./Header";
 import Days from "./Days";
 import Cells from "./Cells";
+import EventModal from "./EventModal";
 
 const Calendar = () => {
+    // Current month and selected date
     const [currentMonth, setMonth] = useState(new Date());
+    const [selectedDate, selectDate] = useState(new Date());
 
     // Start and End dates of the current month
     const [monthStart, setMonthStart] = useState(startOfMonth(currentMonth));
@@ -21,7 +24,8 @@ const Calendar = () => {
     const [startOfWeekForMonth, setMonthWeekStart] = useState(startOfWeek(monthStart));
     const [endOfWeekForMonth, setMonthWeekEnd] = useState(endOfWeek(monthEnd));
 
-    const [selectedDate, selectDate] = useState(new Date());
+    // Modal State
+    const [modalOpen, toggleModal] = useState(false);
 
     const handleNextMonth = () => {
         // Update and assign to variables
@@ -55,6 +59,11 @@ const Calendar = () => {
 
     const handleSelectDate = (day) => {
         selectDate(day);
+        toggleModal(!modalOpen);
+    }
+
+    const handleToggleModal = () => {
+        toggleModal(!modalOpen);
     }
 
     return (
@@ -74,6 +83,11 @@ const Calendar = () => {
                 endOfWeekForMonth={endOfWeekForMonth}
                 selectedDate={selectedDate}
                 selectDate={handleSelectDate}
+            />
+            <EventModal
+                modalOpen={modalOpen}
+                toggleModal={handleToggleModal}
+                selectedDate={selectedDate}
             />
         </div>
     );

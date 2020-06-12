@@ -17,7 +17,7 @@ const App = () => {
         </div>
       </header>
       <main>
-        <Calendar  />
+        <Calendar />
       </main>
     </div>
   );
