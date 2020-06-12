@@ -21,22 +21,36 @@ const Calendar = () => {
     const [startOfWeekForMonth, setMonthWeekStart] = useState(startOfWeek(monthStart));
     const [endOfWeekForMonth, setMonthWeekEnd] = useState(endOfWeek(monthEnd));
 
-    const [selectedDate, selectDate] = useState();
+    const [selectedDate, selectDate] = useState(new Date());
 
     const handleNextMonth = () => {
-        setMonth(addMonths(currentMonth, 1));
-        setMonthStart(startOfMonth(currentMonth));
-        setMonthEnd(endOfMonth(currentMonth));
-        setMonthWeekStart(startOfWeek(monthStart));
-        setMonthWeekEnd(endOfWeek(monthEnd));
+        // Update and assign to variables
+        // Otherwise, the ones dependent on the ones
+        // that need to change will never get updated properly
+        let addMonth = addMonths(currentMonth, 1);
+        let addWeekStart = startOfMonth(addMonth);
+        let addWeekEnd = endOfMonth(addMonth);
+
+        setMonth(addMonth);
+        setMonthStart(startOfMonth(addMonth));
+        setMonthEnd(endOfMonth(addMonth));
+        setMonthWeekStart(startOfWeek(addWeekStart));
+        setMonthWeekEnd(endOfWeek(addWeekEnd));
     }
 
     const handlePrevMonth = () => {
-        setMonth(subMonths(currentMonth, 1));
-        setMonthStart(startOfMonth(currentMonth));
-        setMonthEnd(endOfMonth(currentMonth));
-        setMonthWeekStart(startOfWeek(monthStart));
-        setMonthWeekEnd(endOfWeek(monthEnd));
+        // Update and assign to variables
+        // Otherwise, the ones dependent on the ones
+        // that need to change will never get updated properly
+        let subMonth = subMonths(currentMonth, 1);
+        let subWeekStart = startOfMonth(subMonth);
+        let subWeekEnd = endOfMonth(subMonth);
+
+        setMonth(subMonth);
+        setMonthStart(startOfMonth(subMonth));
+        setMonthEnd(endOfMonth(subMonth));
+        setMonthWeekStart(startOfWeek(subWeekStart));
+        setMonthWeekEnd(endOfWeek(subWeekEnd));
     }
 
     const handleSelectDate = (day) => {
@@ -54,6 +68,8 @@ const Calendar = () => {
                 currentMonth={currentMonth}
             />
             <Cells
+                monthStart={monthStart}
+                monthEnd={monthEnd}
                 startOfWeekForMonth={startOfWeekForMonth}
                 endOfWeekForMonth={endOfWeekForMonth}
                 selectedDate={selectedDate}

@@ -6,6 +6,8 @@ import isSameMonth from "date-fns/isSameMonth";
 import parse from "date-fns/parse";
 
 const Cells = ({
+    monthStart,
+    monthEnd,
     startOfWeekForMonth,
     endOfWeekForMonth,
     selectedDate,
@@ -26,12 +28,12 @@ const Cells = ({
             days.push(
                 <div
                     className={`col cell ${
-                    !isSameMonth(day, startOfWeekForMonth)
-                        ? "disabled"
-                        : isSameDay(day, selectedDate) ? "selected" : ""
+                        !isSameMonth(day, monthStart)
+                            ? "disabled"
+                            : isSameDay(day, selectedDate) ? "selected" : ""
                     }`}
                     key={day}
-                    onClick={() => selectDate(parse(cloneDay))}
+                    onClick={() => selectDate(cloneDay)}
                 >
                     <span className="number">{formattedDate}</span>
                     <span className="bg">{formattedDate}</span>
