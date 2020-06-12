@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import dayOfWeek from "../helpers/DayOfWeekHelper";
