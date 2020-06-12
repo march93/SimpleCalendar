@@ -20,13 +20,24 @@ filter_dates = (events, date) => {
 }
 
 exports.get_user = async (req, res) => {
-    const user = await User.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
+    let user;
 
-    return res.json(user);
+    try {
+        user = await User.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+    } catch (error) {
+        return res.status(500).send({error: error.name});
+    }
+
+    // 404 User Not Found
+    if (user === null) return res.status(404).send({error: 'User not found'});
+
+    // 200 OK
+    res.status(200);
+    res.json(user);
 }
 
 exports.get_user_events = async (req, res) => {
