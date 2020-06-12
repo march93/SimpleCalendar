@@ -236,4 +236,12 @@ main {
   flex-grow: 0;
   flex-basis: calc(100%/7);
   width: calc(100%/7);
-} 
+}
+
+.modalTitleInput {
+  margin-bottom: 10px;
+}
+
+.modalRangePicker {
+  margin-bottom: 10px;
+}

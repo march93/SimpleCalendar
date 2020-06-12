@@ -16,6 +16,7 @@ const Calendar = () => {
     // Events
     const [events, setEvents] = useState([]);
     const [selectedDateEvents, selectDateEvents] = useState([]);
+    const [selectedDayEvent, selectDayEvent] = useState({});
 
     // Current month and selected date
     const [currentMonth, setMonth] = useState(new Date());
@@ -31,6 +32,9 @@ const Calendar = () => {
 
     // Modal State
     const [modalOpen, toggleModal] = useState(false);
+    const [displayEvents, setDisplayEvents] = useState(false);
+    const [editEventState, setEditEventState] = useState(false);
+    const [createEventState, setCreateEventState] = useState(false);
 
     const handleNextMonth = () => {
         // Update and assign to variables
@@ -77,8 +81,36 @@ const Calendar = () => {
         toggleModal(!modalOpen);
     }
 
+    const handleDisplayEvents = () => {
+        setDisplayEvents(true);
+
+        // If Edit or Create events are true, set to false
+        if (editEventState) setEditEventState(false);
+        if (createEventState) setCreateEventState(false);
+    }
+
+    const handleEditEventState = () => {
+        setEditEventState(true);
+
+        // If Display or Create events are true, set to false
+        if (displayEvents) setDisplayEvents(false);
+        if (createEventState) setCreateEventState(false);
+    }
+
+    const handleCreateEventState = () => {
+        setCreateEventState(true);
+
+        // If Display or Edit events are true, set to false
+        if (displayEvents) setDisplayEvents(false);
+        if (editEventState) setEditEventState(false);
+    }
+
     const handleSelectDateEvents = (selectedEvents) => {
         selectDateEvents(selectedEvents);
+    }
+
+    const handleSelectDayEvent = (dayEvent) => {
+        selectDayEvent(dayEvent);
     }
 
     const fetchEvents = async (date) => {
@@ -117,12 +149,21 @@ const Calendar = () => {
                 endOfWeekForMonth={endOfWeekForMonth}
                 selectedDate={selectedDate}
                 selectDate={handleSelectDate}
+                showEvents={handleDisplayEvents}
             />
             <EventModal
                 modalOpen={modalOpen}
                 toggleModal={handleToggleModal}
                 selectedDate={selectedDate}
                 dateEvents={selectedDateEvents}
+                displayEvents={displayEvents}
+                editEventState={editEventState}
+                createEventState={createEventState}
+                showEvents={handleDisplayEvents}
+                showEdit={handleEditEventState}
+                showCreate={handleCreateEventState}
+                dayEvent={selectedDayEvent}
+                selectDayEvent={handleSelectDayEvent}
             />
         </div>
     );

@@ -13,7 +13,8 @@ const Cells = ({
     startOfWeekForMonth,
     endOfWeekForMonth,
     selectedDate,
-    selectDate
+    selectDate,
+    showEvents
 }) => {
     const dateFormat = "d";
     const rows = [];
@@ -41,6 +42,7 @@ const Cells = ({
                     }`}
                     key={day}
                     onClick={() => {
+                        showEvents();
                         selectDateEvents(sameDayEvents);
                         selectDate(cloneDay)}
                     }
