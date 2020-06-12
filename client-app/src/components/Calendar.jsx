@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import addMonths from "date-fns/addMonths";
 import subMonths from "date-fns/subMonths";
 import startOfMonth from "date-fns/startOfMonth";
 import endOfMonth from "date-fns/endOfMonth";
 import startOfWeek from "date-fns/startOfWeek";
 import endOfWeek from "date-fns/endOfWeek";
+import axios from 'axios';
 
 import Header from "./Header";
 import Days from "./Days";
@@ -12,6 +13,9 @@ import Cells from "./Cells";
 import EventModal from "./EventModal";
 
 const Calendar = () => {
+    // Events
+    const [events, setEvents] = useState([]);
+
     // Current month and selected date
     const [currentMonth, setMonth] = useState(new Date());
     const [selectedDate, selectDate] = useState(new Date());
@@ -40,6 +44,9 @@ const Calendar = () => {
         setMonthEnd(endOfMonth(addMonth));
         setMonthWeekStart(startOfWeek(addWeekStart));
         setMonthWeekEnd(endOfWeek(addWeekEnd));
+
+        // Fetch next month's events
+        fetchEvents(addMonth);
     }
 
     const handlePrevMonth = () => {
@@ -55,6 +62,9 @@ const Calendar = () => {
         setMonthEnd(endOfMonth(subMonth));
         setMonthWeekStart(startOfWeek(subWeekStart));
         setMonthWeekEnd(endOfWeek(subWeekEnd));
+
+        // Fetch prev month's events
+        fetchEvents(subMonth);
     }
 
     const handleSelectDate = (day) => {
@@ -65,6 +75,24 @@ const Calendar = () => {
     const handleToggleModal = () => {
         toggleModal(!modalOpen);
     }
+
+    const fetchEvents = async (date) => {
+        await axios.get('http://localhost:5000/users/1/events', {
+            params: {
+                date: date
+            }
+        })
+        .then(response => {
+            setEvents(response.data);
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+    }
+
+    useEffect(() => {
+        fetchEvents(currentMonth);
+    }, []);
 
     return (
         <div className="calendar">
