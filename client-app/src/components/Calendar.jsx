@@ -105,8 +105,8 @@ const Calendar = () => {
                 currentMonth={currentMonth}
             />
             <Cells
+                events={events}
                 monthStart={monthStart}
-                monthEnd={monthEnd}
                 startOfWeekForMonth={startOfWeekForMonth}
                 endOfWeekForMonth={endOfWeekForMonth}
                 selectedDate={selectedDate}

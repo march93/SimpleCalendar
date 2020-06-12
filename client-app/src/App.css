@@ -222,6 +222,11 @@ main {
   letter-spacing: -.07em;
 }
 
+.calendar .body .cell .cell-tag {
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
 .calendar .body .cell:hover .bg, .calendar .body .selected .bg  {
   opacity: 0.05;
   transition: .5s ease-in;
