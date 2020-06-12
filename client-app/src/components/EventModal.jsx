@@ -1,6 +1,7 @@
 import React from "react";
 import { format } from "date-fns";
-import { Modal } from "antd";
+import parseISO from 'date-fns/parseISO'
+import { Modal, List, Button } from "antd";
 
 import dayOfWeek from "../helpers/DayOfWeekHelper";
 
@@ -9,13 +10,15 @@ import 'antd/dist/antd.css';
 const EventModal = ({
     modalOpen,
     toggleModal,
-    selectedDate
+    selectedDate,
+    dateEvents
 }) => {
-     const handleOk = () => toggleModal();
+    const handleOk = () => toggleModal();
 
-     const handleCancel = () => toggleModal();
+    const handleCancel = () => toggleModal();
 
-     const dateFormat = "MMMM d";
+    const dateFormat = "MMMM d";
+    const timeFormat = "h:mma";
 
     return (
         <div className="event-modal">
@@ -25,9 +28,20 @@ const EventModal = ({
                 onOk={handleOk}
                 onCancel={handleCancel}
                 >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                <List
+                    size="large"
+                    bordered
+                    dataSource={dateEvents}
+                    renderItem={item =>
+                        <List.Item>
+                            <Button type="text">
+                                <p>
+                                    <b>[{item.title}]</b> <span>{format(parseISO(item.startTime), timeFormat)} - {format(parseISO(item.endTime), timeFormat)}</span>
+                                </p>
+                            </Button>
+                        </List.Item>
+                    }
+                />
             </Modal>
         </div>
     );

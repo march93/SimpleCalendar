@@ -8,6 +8,7 @@ import { Tag } from 'antd';
 
 const Cells = ({
     events,
+    selectDateEvents,
     monthStart,
     startOfWeekForMonth,
     endOfWeekForMonth,
@@ -39,7 +40,10 @@ const Cells = ({
                             : isSameDay(day, selectedDate) ? "selected" : ""
                     }`}
                     key={day}
-                    onClick={() => selectDate(cloneDay)}
+                    onClick={() => {
+                        selectDateEvents(sameDayEvents);
+                        selectDate(cloneDay)}
+                    }
                 >
                     <span className="number">{formattedDate}</span>
                     <span className="bg">{formattedDate}</span>

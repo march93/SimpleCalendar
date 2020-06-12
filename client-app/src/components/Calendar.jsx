@@ -15,6 +15,7 @@ import EventModal from "./EventModal";
 const Calendar = () => {
     // Events
     const [events, setEvents] = useState([]);
+    const [selectedDateEvents, selectDateEvents] = useState([]);
 
     // Current month and selected date
     const [currentMonth, setMonth] = useState(new Date());
@@ -76,6 +77,10 @@ const Calendar = () => {
         toggleModal(!modalOpen);
     }
 
+    const handleSelectDateEvents = (selectedEvents) => {
+        selectDateEvents(selectedEvents);
+    }
+
     const fetchEvents = async (date) => {
         await axios.get('http://localhost:5000/users/1/events', {
             params: {
@@ -106,6 +111,7 @@ const Calendar = () => {
             />
             <Cells
                 events={events}
+                selectDateEvents={handleSelectDateEvents}
                 monthStart={monthStart}
                 startOfWeekForMonth={startOfWeekForMonth}
                 endOfWeekForMonth={endOfWeekForMonth}
@@ -116,6 +122,7 @@ const Calendar = () => {
                 modalOpen={modalOpen}
                 toggleModal={handleToggleModal}
                 selectedDate={selectedDate}
+                dateEvents={selectedDateEvents}
             />
         </div>
     );
