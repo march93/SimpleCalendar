@@ -23,6 +23,8 @@ exports.get_event = async (req, res) => {
     const serialized = EventSerializer.serialize_event(event);
     const parsed = EventSerializer.trim_data(serialized.data);
 
+    // 200 OK
+    res.status(200);
     res.json(parsed);
 }
 
@@ -37,10 +39,10 @@ exports.create_event = async (req, res) => {
 
     try {
         event = await Event.create({
+            UserId: body.userId,
             title: body.title,
             startTime: body.startTime,
-            endTime: body.endTime,
-            UserId: req.params.id
+            endTime: body.endTime
         });
     } catch (error) {
         return res.status(400).send({error: error.name});
@@ -68,7 +70,7 @@ exports.update_event = async (req, res) => {
         return res.status(500).send({error: error.name});
     }
 
-    if (event.length === 0) {
+    if (event === null) {
         // Return 404 Not Found
         return res.status(404).send({error: 'Event not found'});
     }
