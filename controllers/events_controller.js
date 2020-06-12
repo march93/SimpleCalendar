@@ -94,3 +94,19 @@ exports.update_event = async (req, res) => {
     res.status(200);
     res.json(serialized.data.attributes);
 }
+
+exports.delete_event = async (req, res) => {
+    try {
+        await Event.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+    } catch (error) {
+        return res.status(500).send({error: error.name});
+    }
+
+    // 204 Deleted No Content
+    res.status(204);
+    res.send();
+}

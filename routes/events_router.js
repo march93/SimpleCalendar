@@ -18,4 +18,8 @@ router.post('/:id', events_controller.create_event);
 // BODY { title, startTime, endTime }
 router.patch('/:id', events_controller.update_event);
 
+// DELETE Delete an event for a specific user
+// PARAMS id: user_id
+router.delete('/:id', events_controller.delete_event);
+
 module.exports = router;
