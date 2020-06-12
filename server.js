@@ -10,10 +10,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = 5000;
 
+// Users Router
+const users_router = require('./routes/users_router');
+
 // Events Router
 const events_router = require('./routes/events_router');
 
-// Redirect to router
+// Redirect to users router
+app.use('/users', users_router);
+
+// Redirect to events router
 app.use('/events', events_router);
 
 // start the express server

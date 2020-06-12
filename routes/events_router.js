@@ -8,4 +8,8 @@ var events_controller = require('../controllers/events_controller');
 // PARAMS id: event_id
 router.get('/:id', events_controller.get_event);
 
+// POST Create an event for a specific user
+// PARAMS id: user_id
+router.post('/:id', events_controller.create_event);
+
 module.exports = router;
