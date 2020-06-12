@@ -35,12 +35,18 @@ const EventModal = ({
     const timeFormat = "h:mma";
     let modalTitle = dayOfWeek(selectedDate) + ", " + format(selectedDate, dateFormat);
     let body;
+    let dayEventCopy = dayEvent;
 
     const handleOk = () => toggleModal();
 
     const handleCancel = () => {
         // Go back to showing events if it's in edit mode
-        if (editEventState) showEvents();
+        if (editEventState) {
+            showEvents();
+
+            // Set day event back
+            selectDayEvent({...dayEventCopy});
+        }
 
         // Otherwise, close modal
         else toggleModal();
@@ -49,6 +55,11 @@ const EventModal = ({
     const moveToEditMode = (event) => {
         selectDayEvent(event);
         showEdit();
+    }
+
+    const titleChanged = (event) => {
+        const { name, value } = event.currentTarget;
+        selectDayEvent({...dayEvent, title: value});
     }
 
     if (displayEvents) {
@@ -76,6 +87,7 @@ const EventModal = ({
                         className="modalTitleInput"
                         placeholder="Title"
                         value={dayEvent.title}
+                        onChange={titleChanged}
                     />
                     <DatePicker.RangePicker
                         className="modalRangePicker"
