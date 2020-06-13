@@ -24,6 +24,7 @@ const Calendar = ({
     const [events, setEvents] = useState([]);
     const [selectedDateEvents, selectDateEvents] = useState([]);
     const [selectedDayEvent, selectDayEvent] = useState({});
+    const [occurrence, setOccurrence] = useState("single");
 
     // Create Event
     const [createEventCopy, setCreateEvent] = useState({});
@@ -140,7 +141,9 @@ const Calendar = ({
     }
 
     const createEvent = async (event) => {
-        await axios.post('http://localhost:5000/events', event)
+        const payload = {...event, occurrence: occurrence};
+
+        await axios.post('http://localhost:5000/events', payload)
         .then(response => {
             toggleAlert(true);
             setAlertType("success");
@@ -270,6 +273,7 @@ const Calendar = ({
                 createEvent={createEvent}
                 deleteEvent={deleteEvent}
                 currentUser={currentUser}
+                setOccurrence={setOccurrence}
             />
         </div>
     );

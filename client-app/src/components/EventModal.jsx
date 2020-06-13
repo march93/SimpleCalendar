@@ -11,7 +11,8 @@ import {
     Button,
     Input,
     DatePicker,
-    TimePicker
+    TimePicker,
+    Select
 } from "antd";
 
 import dayOfWeek from "../helpers/DayOfWeekHelper";
@@ -36,9 +37,12 @@ const EventModal = ({
     setCreateEvent,
     createEvent,
     deleteEvent,
-    currentUser
+    currentUser,
+    setOccurrence
 }) => {
     const [disableOk, setDisableOk] = useState(false);
+
+    const { Option } = Select;
 
     const momentDateFormat = "YYYY-MM-DD";
     const momentTimeFormat = "h:mm a"
@@ -244,7 +248,7 @@ const EventModal = ({
                         onChange={timeChanged}
                     />
                     <Button
-                        className="deleteBtn"
+                        className="blockMargin"
                         type="primary"
                         danger
                         onClick={() => deleteEvent(dayEvent.id)}
@@ -278,6 +282,15 @@ const EventModal = ({
                         format="h:mm a"
                         onChange={createTimeChanged}
                     />
+                    <Select
+                        className="blockMargin"
+                        defaultValue="single"
+                        onChange={(val) => setOccurrence(val)}
+                    >
+                        <Option value="single">Single</Option>
+                        <Option value="weekly">Weekly</Option>
+                        <Option value="monthly">Monthly</Option>
+                    </Select>
                     <p
                         className="errorMessage"
                         hidden={!disableOk}
