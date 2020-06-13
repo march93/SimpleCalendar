@@ -180,7 +180,6 @@ const Calendar = () => {
                 createEventState={createEventState}
                 showEvents={handleDisplayEvents}
                 showEdit={handleEditEventState}
-                showCreate={handleCreateEventState}
                 dayEvent={selectedDayEvent}
                 selectDayEvent={handleSelectDayEvent}
                 updateEvent={updateEvent}

@@ -26,15 +26,13 @@ const EventModal = ({
     createEventState,
     showEvents,
     showEdit,
-    showCreate,
     dayEvent,
     selectDayEvent,
     updateEvent
 }) => {
     const momentDateFormat = "YYYY-MM-DD";
-    const momentTimeFormat = "HH:mm:ss"
+    const momentTimeFormat = "h:mm a"
     const dateFormat = "MMMM d";
-    const timeFormat = "h:mma";
     let modalTitle = dayOfWeek(selectedDate) + ", " + format(selectedDate, dateFormat);
     let body;
     let dayEventCopy = dayEvent;
@@ -75,6 +73,11 @@ const EventModal = ({
         selectDayEvent({...dayEvent, startDate: changedDates[0], endDate: changedDates[1]});
     }
 
+    const timeChanged = (time, timeString) => {
+        const converted = timeString.map((t) => moment(t, momentTimeFormat).format());
+        selectDayEvent({...dayEvent, startTime: converted[0], endTime: converted[1]});
+    }
+
     if (displayEvents) {
         body = <List
                     size="large"
@@ -87,7 +90,7 @@ const EventModal = ({
                                 onClick={() => moveToEditMode(item)}
                             >
                                 <p>
-                                    <b>[{item.title}]</b> <span>{new Date(Date(item.startTime)).toLocaleTimeString()} - {new Date(Date(item.endTime)).toLocaleTimeString()}</span>
+                                    <b>[{item.title}]</b> <span>{moment(item.startTime).format('LT')} - {moment(item.endTime).format('LT')}</span>
                                 </p>
                             </Button>
                         </List.Item>
@@ -109,7 +112,10 @@ const EventModal = ({
                     />
                     <TimePicker.RangePicker
                         className="modalTimeRange"
-                        defaultValue={[moment(dayEvent.startTime, momentTimeFormat), moment(dayEvent.endTime, momentTimeFormat)]}
+                        use12Hours
+                        format="h:mm a"
+                        defaultValue={[moment(dayEvent.startTime), moment(dayEvent.endTime)]}
+                        onChange={timeChanged}
                     />
               </div>;
     } else if (createEventState) {
