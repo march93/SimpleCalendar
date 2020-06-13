@@ -1,10 +1,6 @@
 const Event = require('../models/event');
 const EventSerializer = require('../serializers/event_serializer');
-
-const RepeatMethod = Object.freeze({
-    WEEKLY: "weekly",
-    MONTHLY: "monthly"
-});
+const EventService = require('../services/event_service');
 
 exports.get_event = async (req, res) => {
     let event;
@@ -35,35 +31,39 @@ exports.get_event = async (req, res) => {
 exports.create_event = async (req, res) => {
     const body = req.body;
     let event;
+    let serialized;
 
     if (body.startTime >= body.endTime) {
         // Start time and date cannot be after end time and date
         return res.status(400).send({error: 'Invalid event times'});
     }
 
-    // Send to background worker threads to process multiple events
-    // if (body.repeatMethod) {
-        
-    // }
+    if (body.occurrence === EventService.RepeatMethod.SINGLE) {
+        try {
+            event = await Event.create({
+                UserId: body.userId,
+                title: body.title,
+                eventDate: body.eventDate,
+                startTime: body.startTime,
+                endTime: body.endTime
+            });
 
-    try {
-        event = await Event.create({
-            UserId: body.userId,
-            title: body.title,
-            eventDate: body.eventDate,
-            startTime: body.startTime,
-            endTime: body.endTime
-        });
-    } catch (error) {
-        return res.status(400).send({error: error.name});
+            // Serialize return data
+            serialized = EventSerializer.serialize_event(event);
+
+            // 201 Created
+            res.status(201);
+            res.json([serialized.data.attributes]);
+        } catch (error) {
+            return res.status(400).send({error: error.name});
+        }
+    } else {
+        serialized = await EventService.process_events(body);
+
+        // 201 Created
+        res.status(201);
+        res.json(serialized);
     }
-
-    // Serialize return data
-    const serialized = EventSerializer.serialize_event(event);
-
-    // 201 Created
-    res.status(201);
-    res.json(serialized.data.attributes);
 }
 
 exports.update_event = async (req, res) => {

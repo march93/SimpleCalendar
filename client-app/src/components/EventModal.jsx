@@ -156,9 +156,9 @@ const EventModal = ({
 
             if (
                 (chosenDate > 0 || chosenDate < 6) &&
-                (chosenStartTime >= 9 && chosenEndTime <= 17) ||
+                ((chosenStartTime >= 9 && chosenEndTime <= 17) ||
                 (chosenStartTime <= 9 && chosenEndTime >= 9) ||
-                (chosenStartTime <= 17 && chosenEndTime >= 17)
+                (chosenStartTime <= 17 && chosenEndTime >= 17))
             ) {
                 setDisableOk(true);
             }
@@ -199,9 +199,9 @@ const EventModal = ({
 
             if (
                 (chosenDate > 0 || chosenDate < 6) &&
-                (chosenStartTime >= 9 && chosenEndTime <= 17) ||
+                ((chosenStartTime >= 9 && chosenEndTime <= 17) ||
                 (chosenStartTime <= 9 && chosenEndTime >= 9) ||
-                (chosenStartTime <= 17 && chosenEndTime >= 17)
+                (chosenStartTime <= 17 && chosenEndTime >= 17))
             ) {
                 setDisableOk(true);
             }

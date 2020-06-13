@@ -148,7 +148,7 @@ const Calendar = ({
             toggleAlert(true);
             setAlertType("success");
             setAlertMessage("Successfully created event!");
-            setEvents([...events, response.data]);
+            setEvents([...events, ...response.data]);
             setCreateEvent({});
         })
         .catch(error => {

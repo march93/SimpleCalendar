@@ -9,7 +9,7 @@ var events_controller = require('../controllers/events_controller');
 router.get('/:id', events_controller.get_event);
 
 // POST Create an event for a specific user
-// BODY { userId, title, eventDate, startTime, endTime }
+// BODY { userId, title, eventDate, startTime, endTime, occurrence }
 router.post('/', events_controller.create_event);
 
 // PATCH Update an event for a specific user

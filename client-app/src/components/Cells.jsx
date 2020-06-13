@@ -1,7 +1,8 @@
 import React from "react";
 import format from "date-fns/format";
 import addDays from "date-fns/addDays";
-import getDate from 'date-fns/getDate'
+import getDate from 'date-fns/getDate';
+import getMonth from 'date-fns/getMonth';
 import isSameDay from "date-fns/isSameDay";
 import isSameMonth from "date-fns/isSameMonth";
 import parseISO from 'date-fns/parseISO'
@@ -30,7 +31,8 @@ const Cells = ({
             const cloneDay = day;
 
             const sameDayEvents = events.filter((event) => {
-                return getDate(parseISO(event.eventDate)) === getDate(cloneDay);
+                return getDate(parseISO(event.eventDate)) === getDate(cloneDay) &&
+                       getMonth(parseISO(event.eventDate) === getMonth(cloneDay));
             });
 
             days.push(
