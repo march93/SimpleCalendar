@@ -22,6 +22,9 @@ const Calendar = ({
     const [selectedDateEvents, selectDateEvents] = useState([]);
     const [selectedDayEvent, selectDayEvent] = useState({});
 
+    // Create Event
+    const [createEventCopy, setCreateEvent] = useState({});
+
     // Current month and selected date
     const [currentMonth, setMonth] = useState(new Date());
     const [selectedDate, selectDate] = useState(new Date());
@@ -133,6 +136,10 @@ const Calendar = ({
         });
     }
 
+    const createEvent = async (event) => {
+        console.log(event);
+    }
+
     const updateEvent = async (event) => {
         let body = {};
         if (event.title) body.title = event.title;
@@ -185,6 +192,7 @@ const Calendar = ({
                 modalOpen={modalOpen}
                 toggleModal={handleToggleModal}
                 selectedDate={selectedDate}
+                events={events}
                 dateEvents={selectedDateEvents}
                 displayEvents={displayEvents}
                 editEventState={editEventState}
@@ -194,6 +202,9 @@ const Calendar = ({
                 dayEvent={selectedDayEvent}
                 selectDayEvent={handleSelectDayEvent}
                 updateEvent={updateEvent}
+                createEventCopy={createEventCopy}
+                setCreateEvent={setCreateEvent}
+                createEvent={createEvent}
             />
         </div>
     );

@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from 'moment';
 import { format } from "date-fns";
-import parseISO from 'date-fns/parseISO'
-import parse from 'date-fns/parse';
 import {
     Modal,
     List,
@@ -20,6 +18,7 @@ const EventModal = ({
     modalOpen,
     toggleModal,
     selectedDate,
+    events,
     dateEvents,
     displayEvents,
     editEventState,
@@ -28,8 +27,13 @@ const EventModal = ({
     showEdit,
     dayEvent,
     selectDayEvent,
-    updateEvent
+    updateEvent,
+    createEventCopy,
+    setCreateEvent,
+    createEvent
 }) => {
+    const [disableOk, setDisableOk] = useState(false);
+
     const momentDateFormat = "YYYY-MM-DD";
     const momentTimeFormat = "h:mm a"
     const dateFormat = "MMMM d";
@@ -41,7 +45,11 @@ const EventModal = ({
         if (editEventState) {
             // Edit Mode
             updateEvent(dayEvent);
+        } else if (createEventState) {
+            // Create mode
+            createEvent(createEventCopy);
         }
+
         toggleModal();
     }
 
@@ -76,6 +84,54 @@ const EventModal = ({
     const timeChanged = (time, timeString) => {
         const converted = timeString.map((t) => moment(t, momentTimeFormat).format());
         selectDayEvent({...dayEvent, startTime: converted[0], endTime: converted[1]});
+    }
+
+    const createTitleChanged = (event) => {
+        const { name, value } = event.currentTarget;
+        setCreateEvent({...createEventCopy, title: value});
+    }
+
+    const createDateChanged = (event) => {
+        const changedDates = event.map((e) => e.format());
+        setCreateEvent({...createEventCopy, startDate: changedDates[0], endDate: changedDates[1]});
+    }
+
+    const createTimeChanged = (time, timeString) => {
+        const converted = timeString.map((t) => moment(t, momentTimeFormat).format());
+        setCreateEvent({...createEventCopy, startTime: converted[0], endTime: converted[1]});
+
+        // Check if user has existing events during these times
+        const collision = events.filter((event) => {
+            return (
+                        // Event sandboxed
+                        (event.startDate <= createEventCopy.startDate &&
+                        event.endDate >= createEventCopy.endDate) ||
+
+                        // Overlap in the beginning
+                        (event.startDate >= createEventCopy.startDate &&
+                        event.startDate <= createEventCopy.endDate) ||
+
+                        // Overlap at the end
+                        (event.endDate >= createEventCopy.startDate &&
+                        event.endDate <= createEventCopy.endDate)
+                   ) &&
+                   (
+                        // Event sandboxed
+                        (event.startTime <= converted[0] &&
+                        event.endTime >= converted[1]) ||
+
+                        // Overlap in the beginning
+                        (event.startTime >= converted[0] &&
+                        event.startTime <= converted[1]) ||
+
+                        // Overlap at the end
+                        (event.endTime >= converted[0] &&
+                        event.endTime <= converted[1])
+                   )
+        });
+
+        if (collision.length !== 0) setDisableOk(true);
+        else setDisableOk(false);
     }
 
     if (displayEvents) {
@@ -125,13 +181,25 @@ const EventModal = ({
                     <Input
                         className="modalTitleInput"
                         placeholder="Title"
+                        value={createEventCopy.title}
+                        onChange={createTitleChanged}
                     />
                     <DatePicker.RangePicker
                         className="modalRangePicker"
+                        onChange={createDateChanged}
                     />
                     <TimePicker.RangePicker
                         className="modalTimeRange"
+                        use12Hours
+                        format="h:mm a"
+                        onChange={createTimeChanged}
                     />
+                    <p
+                        className="errorMessage"
+                        hidden={!disableOk}
+                    >
+                        Events scheduled during this time!
+                    </p>
               </div>;
     }
 
@@ -142,6 +210,7 @@ const EventModal = ({
                 visible={modalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
+                okButtonProps={{disabled: disableOk}}
             >
                 {body}
             </Modal>
