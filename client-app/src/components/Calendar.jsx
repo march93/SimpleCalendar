@@ -173,6 +173,23 @@ const Calendar = ({
         });
     }
 
+    const deleteEvent = async (id) => {
+        toggleModal(false);
+
+        await axios.delete('http://localhost:5000/events/' + id)
+        .then(response => {
+            toggleAlert(true);
+            setAlertType("success");
+            setAlertMessage("Successfully deleted event!");
+            setEvents([...events.filter(a => a.id !== id)]);
+        })
+        .catch(error => {
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
+        });
+    }
+
     useEffect(() => {
         fetchEvents(currentMonth);
     }, []);
@@ -216,6 +233,7 @@ const Calendar = ({
                 createEventCopy={createEventCopy}
                 setCreateEvent={setCreateEvent}
                 createEvent={createEvent}
+                deleteEvent={deleteEvent}
             />
         </div>
     );

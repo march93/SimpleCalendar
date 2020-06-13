@@ -32,7 +32,8 @@ const EventModal = ({
     updateEvent,
     createEventCopy,
     setCreateEvent,
-    createEvent
+    createEvent,
+    deleteEvent
 }) => {
     const [disableOk, setDisableOk] = useState(false);
 
@@ -205,6 +206,14 @@ const EventModal = ({
                         defaultValue={[moment(dayEvent.startTime), moment(dayEvent.endTime)]}
                         onChange={timeChanged}
                     />
+                    <Button
+                        className="deleteBtn"
+                        type="primary"
+                        danger
+                        onClick={() => deleteEvent(dayEvent.id)}
+                    >
+                        DELETE
+                    </Button>
               </div>;
     } else if (createEventState) {
         modalTitle = '';

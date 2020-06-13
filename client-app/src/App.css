@@ -256,3 +256,8 @@ main {
   margin-top: 10px;
   color: red;
 }
+
+.deleteBtn {
+  display: block;
+  margin-top: 10px;
+}
