@@ -12,7 +12,11 @@ import Days from "./Days";
 import Cells from "./Cells";
 import EventModal from "./EventModal";
 
-const Calendar = () => {
+const Calendar = ({
+    toggleAlert,
+    setAlertType,
+    setAlertMessage
+}) => {
     // Events
     const [events, setEvents] = useState([]);
     const [selectedDateEvents, selectDateEvents] = useState([]);
@@ -123,7 +127,9 @@ const Calendar = () => {
             setEvents(response.data);
         })
         .catch(error => {
-            console.log('Error:', error);
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
         });
     }
 
@@ -137,11 +143,16 @@ const Calendar = () => {
 
         await axios.patch('http://localhost:5000/events/' + event.id, body)
         .then(response => {
+            toggleAlert(true);
+            setAlertType("success");
+            setAlertMessage("Successfully updated event!");
             setEvents([...events.filter(a => a.id !== event.id), event]);
         })
         .catch(error => {
-            console.log('Error:', error);
-        })
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
+        });
     }
 
     useEffect(() => {

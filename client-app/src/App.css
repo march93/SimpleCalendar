@@ -245,3 +245,8 @@ main {
 .modalRangePicker {
   margin-bottom: 10px;
 }
+
+.alert {
+  margin: 30px auto;
+  width: 20%;
+}
