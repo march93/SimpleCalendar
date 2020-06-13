@@ -5,18 +5,11 @@ const UserSerializer = require('../serializers/user_serializer');
 
 filter_dates = (events, date) => {
     return events.filter((event) => {
-        let eventStartDate = new Date(event.startDate);
-        let eventEndDate = new Date(event.endDate);
+        let eventDate = new Date(event.eventDate);
         let queryDate = new Date(date);
 
-        return (
-                eventStartDate.getMonth() == queryDate.getMonth() &&
-                eventStartDate.getFullYear() == queryDate.getFullYear()
-               ) ||
-               (
-                eventEndDate.getMonth() == queryDate.getMonth() &&
-                eventEndDate.getFullYear() == queryDate.getFullYear()
-               );
+        return eventDate.getMonth() == queryDate.getMonth() &&
+               eventDate.getFullYear() == queryDate.getFullYear();
     });
 }
 

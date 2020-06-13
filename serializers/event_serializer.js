@@ -1,7 +1,7 @@
 const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
 const EventSerializer = new JSONAPISerializer('events', {
-    attributes: ['id', 'title', 'startDate', 'endDate', 'startTime', 'endTime'],
+    attributes: ['id', 'title', 'eventDate', 'startTime', 'endTime'],
     keyForAttribute: 'camelCase'
 });
 

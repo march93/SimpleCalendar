@@ -1,6 +1,11 @@
 const Event = require('../models/event');
 const EventSerializer = require('../serializers/event_serializer');
 
+const RepeatMethod = Object.freeze({
+    WEEKLY: "weekly",
+    MONTHLY: "monthly"
+});
+
 exports.get_event = async (req, res) => {
     let event;
 
@@ -31,23 +36,21 @@ exports.create_event = async (req, res) => {
     const body = req.body;
     let event;
 
-    if (
-        new Date(body.startDate).getDate() > new Date(body.endDate).getDate() ||
-        (
-            new Date(body.startDate).getDate() === new Date(body.endDate).getDate() &&
-            body.startTime >= body.endTime
-        )
-    ) {
+    if (body.startTime >= body.endTime) {
         // Start time and date cannot be after end time and date
         return res.status(400).send({error: 'Invalid event times'});
     }
+
+    // Send to background worker threads to process multiple events
+    // if (body.repeatMethod) {
+        
+    // }
 
     try {
         event = await Event.create({
             UserId: body.userId,
             title: body.title,
-            startDate: body.startDate,
-            endDate: body.endDate,
+            eventDate: body.eventDate,
             startTime: body.startTime,
             endTime: body.endTime
         });
@@ -85,24 +88,10 @@ exports.update_event = async (req, res) => {
     // Update attributes if they exist
     if (body.title) event.title = body.title;
     if (body.startTime) event.startTime = body.startTime;
-    if (body.startDate) event.startDate = body.startDate;
-
-    // Throw error if end date exists and is before start date
-    if (
-        body.endDate &&
-        new Date(body.startDate).getDate() > new Date(body.endDate).getDate()
-    ) {
-        return res.status(400).send({error: 'Invalid end date'});
-    } else {
-        event.endDate = body.endDate;
-    }
+    if (body.eventDate) event.eventDate = body.eventDate;
 
     // Throw error if end time exists and is before start time
-    if (
-        body.endTime &&
-        new Date(body.startDate).getDate() === new Date(body.endDate).getDate() &&
-        body.startTime >= body.endTime
-    ) {
+    if (body.endTime && (body.startTime >= body.endTime)) {
         return res.status(400).send({error: 'Invalid end time'});
     } else {
         event.endTime = body.endTime;
