@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import moment from 'moment';
 import { format } from "date-fns";
 import isSameDay from "date-fns/isSameDay";
-import parseISO from 'date-fns/parseISO'
+import parseISO from 'date-fns/parseISO';
+import getDay from 'date-fns/getDay';
+import getHours from 'date-fns/getHours';
 import {
     Modal,
     List,
@@ -33,7 +35,8 @@ const EventModal = ({
     createEventCopy,
     setCreateEvent,
     createEvent,
-    deleteEvent
+    deleteEvent,
+    currentUser
 }) => {
     const [disableOk, setDisableOk] = useState(false);
 
@@ -72,6 +75,8 @@ const EventModal = ({
         } else {
             toggleModal();
         }
+
+        setDisableOk(false);
     }
 
     const moveToEditMode = (event) => {
@@ -138,6 +143,22 @@ const EventModal = ({
 
         if (collision.length !== 0) setDisableOk(true);
         else setDisableOk(false);
+
+        // Check if user has working hours set
+        if (currentUser.workingHours) {
+            const chosenDate = getDay(parseISO(convertedCopy.eventDate));
+            const chosenStartTime = getHours(parseISO(convertedCopy.startTime));
+            const chosenEndTime = getHours(parseISO(convertedCopy.endTime));
+
+            if (
+                (chosenDate > 0 || chosenDate < 6) &&
+                (chosenStartTime >= 9 && chosenEndTime <= 17) ||
+                (chosenStartTime <= 9 && chosenEndTime >= 9) ||
+                (chosenStartTime <= 17 && chosenEndTime >= 17)
+            ) {
+                setDisableOk(true);
+            }
+        }
     }
 
     const checkCollisionsUpdate = (changedDateParam, converted) => {
@@ -165,6 +186,22 @@ const EventModal = ({
 
         if (collision.length !== 0) setDisableOk(true);
         else setDisableOk(false);
+
+        // Check if user has working hours set
+        if (currentUser.workingHours) {
+            const chosenDate = getDay(parseISO(convertedCopy.eventDate));
+            const chosenStartTime = getHours(parseISO(convertedCopy.startTime));
+            const chosenEndTime = getHours(parseISO(convertedCopy.endTime));
+
+            if (
+                (chosenDate > 0 || chosenDate < 6) &&
+                (chosenStartTime >= 9 && chosenEndTime <= 17) ||
+                (chosenStartTime <= 9 && chosenEndTime >= 9) ||
+                (chosenStartTime <= 17 && chosenEndTime >= 17)
+            ) {
+                setDisableOk(true);
+            }
+        }
     }
 
     if (displayEvents) {
@@ -214,6 +251,12 @@ const EventModal = ({
                     >
                         DELETE
                     </Button>
+                    <p
+                        className="errorMessage"
+                        hidden={!disableOk}
+                    >
+                        Events scheduled during this time!
+                    </p>
               </div>;
     } else if (createEventState) {
         modalTitle = '';

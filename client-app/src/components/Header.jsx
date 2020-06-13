@@ -1,15 +1,21 @@
 import React from "react";
 import { format } from "date-fns";
-import { Button } from "antd";
+import { Button, Switch } from "antd";
 
 const Header = ({
     currentMonth,
     nextMonth,
     prevMonth,
     toggleModal,
-    showCreate
+    showCreate,
+    currentUser,
+    updateUser
 }) => {
     const dateFormat = "MMMM yyyy";
+
+    const updateHours = (checked) => {
+        updateUser(checked);
+    }
 
     return (
         <div className="header row flex-middle">
@@ -17,6 +23,13 @@ const Header = ({
                 <div className="icon" onClick={prevMonth}>
                 chevron_left
                 </div>
+            </div>
+            <div>
+                <span className="officeHours">Set Office Hours</span>
+                <Switch
+                    checked={currentUser.workingHours}
+                    onChange={updateHours}
+                />
             </div>
             <div className="col col-center">
                 <span>

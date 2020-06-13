@@ -17,6 +17,9 @@ const Calendar = ({
     setAlertType,
     setAlertMessage
 }) => {
+    // User
+    const [currentUser, setUser] = useState({});
+
     // Events
     const [events, setEvents] = useState([]);
     const [selectedDateEvents, selectDateEvents] = useState([]);
@@ -190,7 +193,37 @@ const Calendar = ({
         });
     }
 
+    const getUser = async () => {
+        await axios.get('http://localhost:5000/users/1')
+        .then(response => {
+            setUser(response.data);
+        })
+        .catch(error => {
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
+        });
+    }
+
+    const updateUser = async (hours) => {
+        await axios.patch('http://localhost:5000/users/1', {
+            workingHours: hours
+        })
+        .then(response => {
+            toggleAlert(true);
+            setAlertType("success");
+            setAlertMessage("Successfully updated user!");
+            setUser({...currentUser, workingHours: hours});
+        })
+        .catch(error => {
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
+        });
+    }
+
     useEffect(() => {
+        getUser();
         fetchEvents(currentMonth);
     }, []);
 
@@ -202,6 +235,8 @@ const Calendar = ({
                 prevMonth={handlePrevMonth}
                 toggleModal={handleToggleModal}
                 showCreate={handleCreateEventState}
+                currentUser={currentUser}
+                updateUser={updateUser}
             />
             <Days
                 currentMonth={currentMonth}
@@ -234,6 +269,7 @@ const Calendar = ({
                 setCreateEvent={setCreateEvent}
                 createEvent={createEvent}
                 deleteEvent={deleteEvent}
+                currentUser={currentUser}
             />
         </div>
     );
