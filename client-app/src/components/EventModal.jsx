@@ -2,6 +2,7 @@ import React from "react";
 import moment from 'moment';
 import { format } from "date-fns";
 import parseISO from 'date-fns/parseISO'
+import parse from 'date-fns/parse';
 import {
     Modal,
     List,
@@ -27,7 +28,8 @@ const EventModal = ({
     showEdit,
     showCreate,
     dayEvent,
-    selectDayEvent
+    selectDayEvent,
+    updateEvent
 }) => {
     const momentDateFormat = "YYYY-MM-DD";
     const momentTimeFormat = "HH:mm:ss"
@@ -37,7 +39,13 @@ const EventModal = ({
     let body;
     let dayEventCopy = dayEvent;
 
-    const handleOk = () => toggleModal();
+    const handleOk = () => {
+        if (editEventState) {
+            // Edit Mode
+            updateEvent(dayEvent);
+        }
+        toggleModal();
+    }
 
     const handleCancel = () => {
         // Go back to showing events if it's in edit mode
@@ -62,6 +70,11 @@ const EventModal = ({
         selectDayEvent({...dayEvent, title: value});
     }
 
+    const dateChanged = (event) => {
+        const changedDates = event.map((e) => e.format());
+        selectDayEvent({...dayEvent, startDate: changedDates[0], endDate: changedDates[1]});
+    }
+
     if (displayEvents) {
         body = <List
                     size="large"
@@ -74,7 +87,7 @@ const EventModal = ({
                                 onClick={() => moveToEditMode(item)}
                             >
                                 <p>
-                                    <b>[{item.title}]</b> <span>{format(parseISO(item.startTime), timeFormat)} - {format(parseISO(item.endTime), timeFormat)}</span>
+                                    <b>[{item.title}]</b> <span>{new Date(Date(item.startTime)).toLocaleTimeString()} - {new Date(Date(item.endTime)).toLocaleTimeString()}</span>
                                 </p>
                             </Button>
                         </List.Item>
@@ -91,7 +104,8 @@ const EventModal = ({
                     />
                     <DatePicker.RangePicker
                         className="modalRangePicker"
-                        defaultValue={[moment(dayEvent.startTime, momentDateFormat), moment(dayEvent.endTime, momentDateFormat)]}
+                        defaultValue={[moment(dayEvent.startDate, momentDateFormat), moment(dayEvent.endDate, momentDateFormat)]}
+                        onChange={dateChanged}
                     />
                     <TimePicker.RangePicker
                         className="modalTimeRange"

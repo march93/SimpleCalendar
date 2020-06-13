@@ -29,8 +29,8 @@ const Cells = ({
             const cloneDay = day;
 
             const sameDayEvents = events.filter((event) => {
-                return isSameDay(parseISO(event.startTime), cloneDay) ||
-                       isSameDay(parseISO(event.endTime), cloneDay);
+                return isSameDay(parseISO(event.startDate), cloneDay) ||
+                       isSameDay(parseISO(event.endDate), cloneDay);
             });
 
             days.push(
