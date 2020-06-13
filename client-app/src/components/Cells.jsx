@@ -32,7 +32,7 @@ const Cells = ({
 
             const sameDayEvents = events.filter((event) => {
                 return getDate(parseISO(event.eventDate)) === getDate(cloneDay) &&
-                       getMonth(parseISO(event.eventDate) === getMonth(cloneDay));
+                       isSameMonth(new Date(event.eventDate), new Date(cloneDay));
             });
 
             days.push(

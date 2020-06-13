@@ -134,7 +134,7 @@ const Calendar = ({
             setEvents(response.data);
         })
         .catch(error => {
-            toggleAlert(true);
+            // toggleAlert(true);
             setAlertType("error");
             setAlertMessage(error);
         });
@@ -202,7 +202,7 @@ const Calendar = ({
             setUser(response.data);
         })
         .catch(error => {
-            toggleAlert(true);
+            // toggleAlert(true);
             setAlertType("error");
             setAlertMessage(error);
         });
