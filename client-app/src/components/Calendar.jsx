@@ -137,7 +137,19 @@ const Calendar = ({
     }
 
     const createEvent = async (event) => {
-        console.log(event);
+        await axios.post('http://localhost:5000/events', event)
+        .then(response => {
+            toggleAlert(true);
+            setAlertType("success");
+            setAlertMessage("Successfully created event!");
+            setEvents([...events, response.data]);
+            setCreateEvent({});
+        })
+        .catch(error => {
+            toggleAlert(true);
+            setAlertType("error");
+            setAlertMessage(error);
+        });
     }
 
     const updateEvent = async (event) => {

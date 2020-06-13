@@ -49,6 +49,7 @@ const EventModal = ({
             updateEvent(dayEvent);
         } else if (createEventState) {
             // Create mode
+            createEventCopy.userId = 1;
             createEvent(createEventCopy);
         }
 
@@ -66,6 +67,8 @@ const EventModal = ({
             // Clear fields
             setCreateEvent({});
             setDisableOk(false);
+            toggleModal();
+        } else {
             toggleModal();
         }
     }
@@ -215,14 +218,12 @@ const EventModal = ({
                     />
                     <DatePicker
                         className="modalRangePicker"
-                        value={moment(createEventCopy.eventDate)}
                         onChange={createDateChanged}
                     />
                     <TimePicker.RangePicker
                         className="modalTimeRange"
                         use12Hours
                         format="h:mm a"
-                        value={[moment(createEventCopy.startTime), moment(createEventCopy.endTime)]}
                         onChange={createTimeChanged}
                     />
                     <p
