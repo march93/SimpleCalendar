@@ -143,8 +143,7 @@ const Calendar = ({
     const updateEvent = async (event) => {
         let body = {};
         if (event.title) body.title = event.title;
-        if (event.startDate) body.startDate = event.startDate;
-        if (event.endDate) body.endDate = event.endDate;
+        if (event.eventDate) body.eventDate = event.eventDate;
         if (event.startTime) body.startTime = event.startTime;
         if (event.endTime) body.endTime = event.endTime;
 

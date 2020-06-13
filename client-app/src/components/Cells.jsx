@@ -30,8 +30,7 @@ const Cells = ({
             const cloneDay = day;
 
             const sameDayEvents = events.filter((event) => {
-                return (getDate(parseISO(event.startDate)) <= getDate(cloneDay)) &&
-                       (getDate(parseISO(event.endDate)) >= getDate(cloneDay));
+                return getDate(parseISO(event.eventDate)) === getDate(cloneDay);
             });
 
             days.push(

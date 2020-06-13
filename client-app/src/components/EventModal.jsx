@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import moment from 'moment';
 import { format } from "date-fns";
+import isSameDay from "date-fns/isSameDay";
+import parseISO from 'date-fns/parseISO'
 import {
     Modal,
     List,
@@ -60,10 +62,12 @@ const EventModal = ({
 
             // Set day event back
             selectDayEvent({...dayEventCopy});
+        } else if (createEventState) {
+            // Clear fields
+            setCreateEvent({});
+            setDisableOk(false);
+            toggleModal();
         }
-
-        // Otherwise, close modal
-        else toggleModal();
     }
 
     const moveToEditMode = (event) => {
@@ -77,13 +81,15 @@ const EventModal = ({
     }
 
     const dateChanged = (event) => {
-        const changedDates = event.map((e) => e.format());
-        selectDayEvent({...dayEvent, startDate: changedDates[0], endDate: changedDates[1]});
+        const changedDate = event.format();
+        selectDayEvent({...dayEvent, eventDate: changedDate});
+        checkCollisionsUpdate(changedDate, undefined);
     }
 
     const timeChanged = (time, timeString) => {
         const converted = timeString.map((t) => moment(t, momentTimeFormat).format());
         selectDayEvent({...dayEvent, startTime: converted[0], endTime: converted[1]});
+        checkCollisionsUpdate(undefined, converted)
     }
 
     const createTitleChanged = (event) => {
@@ -92,41 +98,64 @@ const EventModal = ({
     }
 
     const createDateChanged = (event) => {
-        const changedDates = event.map((e) => e.format());
-        setCreateEvent({...createEventCopy, startDate: changedDates[0], endDate: changedDates[1]});
+        const changedDate = event.format();
+        setCreateEvent({...createEventCopy, eventDate: changedDate});
+        checkCollisionsCreate(changedDate, undefined);
     }
 
     const createTimeChanged = (time, timeString) => {
         const converted = timeString.map((t) => moment(t, momentTimeFormat).format());
         setCreateEvent({...createEventCopy, startTime: converted[0], endTime: converted[1]});
+        checkCollisionsCreate(undefined, converted);
+    }
+
+    const checkCollisionsCreate = (changedDateParam, converted) => {
+        let convertedCopy = createEventCopy;
+        if (converted !== undefined) convertedCopy = {eventDate: createEventCopy.eventDate, startTime: converted[0], endTime: converted[1]};
+        if (changedDateParam !== undefined) convertedCopy.eventDate = changedDateParam;
 
         // Check if user has existing events during these times
         const collision = events.filter((event) => {
-            return (
-                        // Event sandboxed
-                        (event.startDate <= createEventCopy.startDate &&
-                        event.endDate >= createEventCopy.endDate) ||
-
-                        // Overlap in the beginning
-                        (event.startDate >= createEventCopy.startDate &&
-                        event.startDate <= createEventCopy.endDate) ||
-
-                        // Overlap at the end
-                        (event.endDate >= createEventCopy.startDate &&
-                        event.endDate <= createEventCopy.endDate)
-                   ) &&
+            return isSameDay(parseISO(event.eventDate), parseISO(convertedCopy.eventDate)) &&
                    (
                         // Event sandboxed
-                        (event.startTime <= converted[0] &&
-                        event.endTime >= converted[1]) ||
+                        (event.startTime <= convertedCopy.startTime &&
+                        event.endTime >= convertedCopy.endTime) ||
 
                         // Overlap in the beginning
-                        (event.startTime >= converted[0] &&
-                        event.startTime <= converted[1]) ||
+                        (event.startTime >= convertedCopy.startTime &&
+                        event.startTime <= convertedCopy.endTime) ||
 
                         // Overlap at the end
-                        (event.endTime >= converted[0] &&
-                        event.endTime <= converted[1])
+                        (event.endTime >= convertedCopy.startTime &&
+                        event.endTime <= convertedCopy.endTime)
+                   )
+        });
+
+        if (collision.length !== 0) setDisableOk(true);
+        else setDisableOk(false);
+    }
+
+    const checkCollisionsUpdate = (changedDateParam, converted) => {
+        let convertedCopy = dayEvent;
+        if (converted !== undefined) convertedCopy = {eventDate: dayEvent.eventDate, startTime: converted[0], endTime: converted[1]};
+        if (changedDateParam !== undefined) convertedCopy.eventDate = changedDateParam;
+
+        // Check if user has existing events during these times
+        const collision = events.filter((event) => {
+            return isSameDay(parseISO(event.eventDate), parseISO(convertedCopy.eventDate)) &&
+                   (
+                        // Event sandboxed
+                        (event.startTime <= convertedCopy.startTime &&
+                        event.endTime >= convertedCopy.endTime) ||
+
+                        // Overlap in the beginning
+                        (event.startTime >= convertedCopy.startTime &&
+                        event.startTime <= convertedCopy.endTime) ||
+
+                        // Overlap at the end
+                        (event.endTime >= convertedCopy.startTime &&
+                        event.endTime <= convertedCopy.endTime)
                    )
         });
 
@@ -161,9 +190,9 @@ const EventModal = ({
                         value={dayEvent.title}
                         onChange={titleChanged}
                     />
-                    <DatePicker.RangePicker
+                    <DatePicker
                         className="modalRangePicker"
-                        defaultValue={[moment(dayEvent.startDate, momentDateFormat), moment(dayEvent.endDate, momentDateFormat)]}
+                        defaultValue={moment(dayEvent.eventDate, momentDateFormat)}
                         onChange={dateChanged}
                     />
                     <TimePicker.RangePicker
@@ -184,14 +213,16 @@ const EventModal = ({
                         value={createEventCopy.title}
                         onChange={createTitleChanged}
                     />
-                    <DatePicker.RangePicker
+                    <DatePicker
                         className="modalRangePicker"
+                        value={moment(createEventCopy.eventDate)}
                         onChange={createDateChanged}
                     />
                     <TimePicker.RangePicker
                         className="modalTimeRange"
                         use12Hours
                         format="h:mm a"
+                        value={[moment(createEventCopy.startTime), moment(createEventCopy.endTime)]}
                         onChange={createTimeChanged}
                     />
                     <p
